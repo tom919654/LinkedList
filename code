@@ -1,0 +1,183 @@
+# LinkedList
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct listNode{
+	char data;
+	struct listNode *nxtP;	
+};
+
+typedef struct listNode ListNode;
+typedef ListNode* ListNodeP;
+
+
+//void push(ListNodeP, char);
+//char rej(ListNodeP, char);
+//int isEmpty(ListNodeP);
+//void printList(ListNodeP);
+//void instructions(void);
+
+
+
+void instructions(void)
+{
+	printf("Enter your choice:\n"
+ " 1 to push an element into the list.\n"
+ " 2 to rejete an element from the list.\n"
+ " 3 to end.\n");
+}
+
+void push(ListNodeP *sP, char value)
+{
+	ListNodeP newP;
+	ListNodeP preP;
+	ListNodeP curP;
+	
+	newP = malloc(sizeof(ListNode));
+	
+	if(newP != NULL)
+	{
+		newP->data = value;
+		newP->nxtP = NULL;
+		
+		preP = NULL;
+		curP = *sP;
+		
+		while(curP != NULL && value > curP->data)
+		{
+			preP = curP;
+			curP = curP->nxtP;
+		}
+		
+		if(preP == NULL){
+			newP->nxtP = *sP;
+			*sP = newP;
+		}
+		else{
+			preP->nxtP = newP;
+			newP->nxtP = curP;
+			
+		}
+	}
+	else {
+		printf("&c not pushed\n",value);
+		
+	}
+}
+
+char rej(ListNodeP *sP, char value)
+{
+	ListNodeP preP;
+	ListNodeP curP;
+	ListNodeP tempP;
+	
+	if(value == (*sP)->data){
+		tempP = *sP;
+		*sP = (*sP)->nxtP;
+		free(tempP);
+		return value;
+	}
+	else{
+		preP = *sP;
+		curP = (*sP)->nxtP;
+		
+		while(curP != NULL && curP->data != value)
+		{
+			preP = curP;
+			curP = curP->nxtP;
+		}
+		
+		if(curP!=NULL)
+		{
+			tempP = curP;
+			preP->nxtP = curP->nxtP;
+			free(tempP);
+			return value;
+		}
+	}
+	
+	return '\0';
+}
+
+int isEmpty(ListNodeP sP)
+{
+return sP == NULL;
+}
+
+void printList(ListNodeP curP)
+{
+	if(curP == NULL){
+		printf("List is empty.\n\n");
+	}
+	else{
+		printf("The list is:\n");
+		
+		while(curP != NULL){
+			printf("%c --> ",curP->data);
+			curP = curP->nxtP;
+		}
+		printf("NULL\n\n");
+	}
+}
+
+int main(int argc, char* argv[])
+{
+	ListNodeP startP = NULL;
+	
+	int choice;
+	int item;
+	
+	
+	instructions();
+	printf("what to do?\n");
+	scanf("%d",&choice);
+	
+	while(choice!=3)
+	{
+		switch(choice){
+		case 1:
+		printf("Enter a character: ");
+		scanf("\n%c", &item);
+		push(&startP, item);
+		printList(startP);
+		break;
+		
+		case 2://for rejete
+			
+		if(!isEmpty(startP))
+		{
+			printf("Enter character to be rejeted: ");
+			scanf("\n%c",&item);
+			
+			if(rej(&startP, item)){
+			printf("%c rejeted.\n",item);
+			printList(startP);
+			}
+			else
+			{
+				printf("%c not found.\n\n",item);		
+			}
+	
+		}
+		else {
+			printf("List is empty.\n\n");
+		}
+		
+		break;
+		
+		default:
+		printf("Invalid choice.\n\n");
+		instructions();
+		break;
+		
+	}
+	}
+
+	
+	printf("? ");
+	scanf("%d",&choice);
+		
+	return 0;
+}
+
